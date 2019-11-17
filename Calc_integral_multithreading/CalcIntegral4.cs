@@ -26,23 +26,28 @@ namespace Calc_integral_multithreading
 
         public void Start()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
             double threadRange = (this.xn - this.x0) / numberOfThreads;
-            Thread[] threads = new Thread[numberOfThreads];
+            Task[] threads = new Task[numberOfThreads];
             for (int i = 0; i < this.numberOfThreads; i++)
             {
                 CalcIntegralThread4 calcIntegralThread = new CalcIntegralThread4(this.integral, this.x0 + i * threadRange, this.x0 + (i + 1) * threadRange, this.dx, "Thread_" + i);
-                Thread thread = new Thread(calcIntegralThread.Calc);
+                Task thread = new Task(calcIntegralThread.Calc);
                 thread.Start();
                 threads[i] = thread;
             }
 
             for (int i = 0; i < numberOfThreads; i++)
             {
-                threads[i].Join();
+                threads[i].Wait();
             }
 
-            Console.WriteLine("Wszystkie wątki sumują wynik w tej samej współdzielonej zmiennej - chronionej przez zamek");
-            Console.WriteLine("Wynik: " + this.integral.result + "\n\n");
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("Każdy wątek liczy swoją sumę lokalną + użycie tasków");
+            Console.WriteLine("Wynik: " + this.integral.result);
+            Console.WriteLine("Czas: " + elapsedMs + "ms\n\n");
         }
     }
 
@@ -65,19 +70,16 @@ namespace Calc_integral_multithreading
 
         public void Calc()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            
+            double thisRangeResult = 0;            
             for (double x = this.x0; x < this.xn; x += this.dx)
             {
-                double y = this.integral.GetFunctionValue(x) * this.dx;
-                lock (this.integral)
-                {
-                    this.integral.result += y;
-                }
+                thisRangeResult += this.integral.GetFunctionValue(x) * this.dx;
             }
-            
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+
+            lock (this.integral)
+            {
+                this.integral.result += thisRangeResult;
+            }
         }
     }
 }

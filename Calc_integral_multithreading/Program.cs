@@ -20,6 +20,9 @@ namespace Calc_integral_multithreading
             CalcIntegral3 calcIntegral3 = new CalcIntegral3(0, 10, 0.00001, 4);
             calcIntegral3.Start();
 
+            CalcIntegral4 calcIntegral4 = new CalcIntegral4(0, 10, 0.00001, 4);
+            calcIntegral4.Start();
+
             Console.ReadKey();
         }
     }
