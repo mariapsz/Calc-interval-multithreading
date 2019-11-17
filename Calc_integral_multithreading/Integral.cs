@@ -16,7 +16,7 @@ namespace Calc_integral_multithreading
 
         public double GetFunctionValue(double x)
         {
-            return x;
+            return 3 * Math.Pow(x, 3) + Math.Cos(7 * x) - Math.Log(2 * x);
         }
     }
 }

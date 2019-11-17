@@ -1,0 +1,12 @@
+BLOKADA SEKCJI KRYTYCZNEJ A POPRAWNOŒÆ WYNIKÓW
+W pierwszym przypadku (liczenie ca³ki bez zamka) wyniki s¹ niepoprawne w przeciwieñstwie
+do pozosta³ych implementacji, które zawieraj¹ zamek. Dzieje siê tak, poniewa¿
+zmiana wartoœci zmiennej nie jest operacj¹ atomow¹, 
+dlatego aby program poprawnie dzia³a³ niezbêdne jest u¿ycie zamka.
+
+SZYBKOŒÆ PROGRAMU A CZÊSTOTLIWOŒÆ BLOKOWANIA SEKCJI KRYTYCZNEJ
+Czas dzia³ania programu w trzecim i czwartym przypadku jest znacznie lepszy ni¿ w drugim przypadku
+Zatem im wiêksza czêstotliwoœæ blokowania przez program sekcji krytycznej tym program bêdzie wolniej dzia³a³.
+
+SZYBKOŒÆ PROGRAMU W¥TKI A TASKI 
+Czas dzia³ania programu w przypadku tasków jest zazwyczaj trochê wiêkszy ni¿ w przypadku w¹tków.
