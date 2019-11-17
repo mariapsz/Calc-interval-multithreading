@@ -50,9 +50,11 @@ namespace Calc_integral_multithreading
         }
     }
 
-    class Integral {
+    class Integral
+    {
         public double result;
-        public Integral() {
+        public Integral()
+        {
             this.result = 0;
         }
     }
@@ -64,7 +66,6 @@ namespace Calc_integral_multithreading
         private double dx;
         private Integral integral;
         private string name;
-        private Object lockObject = new object();
 
         public CalcIntegralThread(Integral integral, double x0, double xn, double dx, string name)
         {
@@ -80,10 +81,9 @@ namespace Calc_integral_multithreading
             for (double arg = this.x0; arg < this.xn; arg += this.dx)
             {
                 double y = this.GetFunctionValue(arg) * this.dx;
-                lock (lockObject)
-                {                 
+                lock (this.integral)
+                {
                     this.integral.result += y;
-                    //Console.WriteLine(this.name + " result: " + this.integral.result + "\n x0: " + this.x0 + " xn: " + this.xn + " dx: " + this.dx + " arg: " + arg +" y: " + y + "\n\n");
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace Calc_integral_multithreading
     {
         static void Main(string[] args)
         {
-            CalcIntegral1 calcIntegral1 = new CalcIntegral1(0, 10, 0.1, 4);
+            CalcIntegral1 calcIntegral1 = new CalcIntegral1(0, 10, 0.0001, 4);
             calcIntegral1.Start();
             Console.ReadKey();
         }
