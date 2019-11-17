@@ -17,6 +17,9 @@ namespace Calc_integral_multithreading
             CalcIntegral2 calcIntegral2 = new CalcIntegral2(0, 10, 0.0001, 4);
             calcIntegral2.Start();
 
+            CalcIntegral3 calcIntegral3 = new CalcIntegral3(0, 10, 0.0001, 4);
+            calcIntegral3.Start();
+
             Console.ReadKey();
         }
     }

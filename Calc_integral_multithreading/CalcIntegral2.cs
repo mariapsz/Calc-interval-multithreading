@@ -41,9 +41,8 @@ namespace Calc_integral_multithreading
                 threads[i].Join();
             }
 
-            Console.WriteLine("Calc integral using lock and shared variable");
-            Console.WriteLine("Integral result for x0=" + this.x0 + " xn=" + this.xn);
-            Console.WriteLine("Result: " + this.integral.result + "\n\n");
+            Console.WriteLine("Wszystkie wątki sumują wynik w tej samej współdzielonej zmiennej - chronionej przez zamek");
+            Console.WriteLine("Wynik: " + this.integral.result + "\n\n");
         }
     }
 
@@ -68,9 +67,9 @@ namespace Calc_integral_multithreading
         {
             for (double x = this.x0; x < this.xn; x += this.dx)
             {
+                double y = this.integral.GetFunctionValue(x) * this.dx;
                 lock (this.integral)
                 {
-                    double y = this.integral.GetFunctionValue(x) * this.dx;
                     this.integral.result += y;
                 }
             }
