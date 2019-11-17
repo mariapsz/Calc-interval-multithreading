@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalcIntegral4.cs" />
     <Compile Include="CalcIntegral2.cs" />
     <Compile Include="CalcIntegral1.cs" />
     <Compile Include="CalcIntegral3.cs" />

@@ -26,6 +26,8 @@ namespace Calc_integral_multithreading
 
         public void Start()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
             double threadRange = (this.xn - this.x0) / numberOfThreads;
             Thread[] threads = new Thread[numberOfThreads];
             for (int i = 0; i < this.numberOfThreads; i++)
@@ -41,8 +43,12 @@ namespace Calc_integral_multithreading
                 threads[i].Join();
             }
 
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+
             Console.WriteLine("Wszystkie wątki sumują wynik w tej samej współdzielonej zmiennej - chronionej przez zamek");
-            Console.WriteLine("Wynik: " + this.integral.result + "\n\n");
+            Console.WriteLine("Wynik: " + this.integral.result);
+            Console.WriteLine("Czas: " + elapsedMs + "ms\n\n");
         }
     }
 
@@ -64,7 +70,7 @@ namespace Calc_integral_multithreading
         }
 
         public void Calc()
-        {
+        {   
             for (double x = this.x0; x < this.xn; x += this.dx)
             {
                 double y = this.integral.GetFunctionValue(x) * this.dx;

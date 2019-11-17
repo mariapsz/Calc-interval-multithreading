@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Calc_integral_multithreading
 {
-    class CalcIntegral1
+    class CalcIntegral4
     {
         private double x0;
         private double xn;
@@ -15,7 +15,7 @@ namespace Calc_integral_multithreading
         private Integral integral;
         private int numberOfThreads;
 
-        public CalcIntegral1(double x0, double xn, double dx, int numberOfThreads)
+        public CalcIntegral4(double x0, double xn, double dx, int numberOfThreads)
         {
             this.x0 = x0;
             this.xn = xn;
@@ -26,13 +26,11 @@ namespace Calc_integral_multithreading
 
         public void Start()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
             double threadRange = (this.xn - this.x0) / numberOfThreads;
             Thread[] threads = new Thread[numberOfThreads];
             for (int i = 0; i < this.numberOfThreads; i++)
             {
-                CalcIntegralThread1 calcIntegralThread = new CalcIntegralThread1(this.integral, this.x0 + i * threadRange, this.x0 + (i + 1) * threadRange, this.dx, "Thread_" + i);
+                CalcIntegralThread4 calcIntegralThread = new CalcIntegralThread4(this.integral, this.x0 + i * threadRange, this.x0 + (i + 1) * threadRange, this.dx, "Thread_" + i);
                 Thread thread = new Thread(calcIntegralThread.Calc);
                 thread.Start();
                 threads[i] = thread;
@@ -43,16 +41,12 @@ namespace Calc_integral_multithreading
                 threads[i].Join();
             }
 
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-
-            Console.WriteLine("Wszystkie wątki sumują wynik w tej samej współdzielonej zmiennej - bez synchronizacji");
-            Console.WriteLine("Wynik: " + this.integral.result);
-            Console.WriteLine("Czas: " + elapsedMs + "ms\n\n");
+            Console.WriteLine("Wszystkie wątki sumują wynik w tej samej współdzielonej zmiennej - chronionej przez zamek");
+            Console.WriteLine("Wynik: " + this.integral.result + "\n\n");
         }
     }
 
-    class CalcIntegralThread1
+    class CalcIntegralThread4
     {
         private double x0;
         private double xn;
@@ -60,7 +54,7 @@ namespace Calc_integral_multithreading
         private Integral integral;
         private string name;
 
-        public CalcIntegralThread1(Integral integral, double x0, double xn, double dx, string name)
+        public CalcIntegralThread4(Integral integral, double x0, double xn, double dx, string name)
         {
             this.x0 = x0;
             this.xn = xn;
@@ -70,12 +64,20 @@ namespace Calc_integral_multithreading
         }
 
         public void Calc()
-        {       
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
             for (double x = this.x0; x < this.xn; x += this.dx)
             {
                 double y = this.integral.GetFunctionValue(x) * this.dx;
-                this.integral.result += y;
+                lock (this.integral)
+                {
+                    this.integral.result += y;
+                }
             }
+            
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
         }
     }
 }
